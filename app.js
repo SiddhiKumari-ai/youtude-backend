@@ -7,6 +7,7 @@ const connectDB = require('./config/db')
 const userRouter = require('./routes/user')
 const videoRouter = require('./routes/video')
 const commentRouter = require('./routes/comment')
+const cors = require('cors')
 
 
 
@@ -16,6 +17,8 @@ app.use(fileUpload({
     useTempFiles:true,
     tempFileDir:'/tmp/'
 }))
+
+app.use(cors())
 
 app.use(express.json())
 app.use(express.urlencoded())
