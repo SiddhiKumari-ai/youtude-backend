@@ -16,8 +16,6 @@ const upload = async (req, res) => {
         let thumbnailId = "";
         let thumbnailUrl = "";
 
-         console.log(req.body)
-         
         if (req.files && req.files.thumbnail) {
 
             const thumbUpload = await cloudinary.uploader.upload(
@@ -47,11 +45,10 @@ const upload = async (req, res) => {
             thumbnailId: thumbnailId,
             thumbnailUrl: thumbnailUrl,
             uploadedBy: userId,
-            tags: req.body.tags,
+            tags: JSON.parse(req.body.tags),
             category:req.body.category
         })
 
-       
         const uploadedVideo = await video.save()
 
         res.status(200).json({
