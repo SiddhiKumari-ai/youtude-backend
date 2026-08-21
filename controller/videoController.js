@@ -131,7 +131,7 @@ const unlike = async(req,res)=>{
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
 
-        const videoId = req.params.videoid
+        const videoId = req.params.videoId
 
         const video = await Video.findById(videoId)
 
@@ -185,7 +185,7 @@ const unlike = async(req,res)=>{
 const videoById = async(req,res)=>{
     try
     {
-       const video = await Video.findById(req.params.videoid).populate('uploadedBy','_id channelName profilePicUrl subscriber')
+       const video = await Video.findById(req.params.videoId).populate('uploadedBy','_id channelName profilePicUrl subscriber')
 
        if(!video)
        {
@@ -251,4 +251,47 @@ const videosByChannelId = async(req,res)=>{
     }
 }
 
-module.exports = { upload, like, unlike, videoById, allVideo, videosByChannelId}
+const deleteVideo = async(req,res)=>{
+    try
+    {
+        const token = req.headers.authorization.split(" ")[1]
+        const tokenData = jwt.verify(token, process.env.SEC_KEY)
+
+        const videoId = req.params.videoId  
+        const video = await Video.findById(req.params.videoId)
+
+        if(!video)
+        {
+            return res.status(200).json({
+                msg:"Video not found!"
+            })
+        }
+
+        if(video.uploadedBy != tokenData._id)
+        {
+            return res.status(200).json({
+                error:"Invalid user",
+                msg:"You can't delete this video"
+            })
+        }
+
+        await cloudinary.uploader.destroy(video.videoId)
+        await cloudinary.uploader.destroy(video.thumbnailId)
+        
+        await Video.deleteOne({_id:video._id})
+        res.status(200).json({
+            msg:"Video Deleted.."
+        })
+
+    }
+    catch(err)
+    {
+        console.log(err)
+        res.status(500).json({
+            error:err
+        })
+    }
+}
+
+
+module.exports = { upload, like, unlike, videoById, allVideo, videosByChannelId, deleteVideo}

@@ -1,12 +1,13 @@
 const express = require('express')
 const Router = express.Router()
-const { upload,like,unlike,videoById,allVideo,videosByChannelId } = require('../controller/videoController')
+const { upload,like,unlike,videoById,allVideo,videosByChannelId,deleteVideo } = require('../controller/videoController')
 
 Router.post('/upload',upload)
 Router.put('/like/:videoId',like)
-Router.put('/dislike/:videoid',unlike)
-Router.get('/videobyid/:videoid',videoById)
+Router.put('/dislike/:videoId',unlike)
+Router.get('/:videoId',videoById)
 Router.get('/allvideo',allVideo)
-Router.get('/allvideo/channelid',videosByChannelId)
+Router.get('/allvideo/channelId',videosByChannelId)
+Router.delete('/:videoId',deleteVideo)
 
 module.exports = Router;
