@@ -53,9 +53,9 @@ const videoSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "User"
     }],
-    tags:{
-        type:any
-    },
+    tags:[{
+        type:String
+    }],
     category:{
         type:String,
         required:true
