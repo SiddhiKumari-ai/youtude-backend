@@ -215,7 +215,9 @@ const videoById = async(req,res)=>{
 const allVideo = async(req,res)=>{
     try
     {
-        const videos = await Video.find().populate('userId','channelName profilePic')
+        console.log("hello")
+        const videos = await Video.find().populate('uploadedBy','channelName profilePic')
+        console.log(videos)
         res.status(200).json({
             videos:videos
         })   
