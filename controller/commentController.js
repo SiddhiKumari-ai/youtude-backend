@@ -39,9 +39,9 @@ const addComment = async(req,res)=>{
 const getAllComment = async(req,res)=>{
     try
     {
-        const token = req.headers.authorization.split(" ")[1]
-        const tokenData = jwt.verify(token, process.env.SEC_KEY)
-        const userId = tokenData._id
+        // const token = req.headers.authorization.split(" ")[1]
+        // const tokenData = jwt.verify(token, process.env.SEC_KEY)
+        // const userId = tokenData._id
 
         const videoId = req.params.videoId
 
