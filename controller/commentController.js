@@ -3,7 +3,7 @@ const Comment = require('../models/Comment')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { findById } = require('../models/User')
+// const { findById } = require('../models/User')
 
 const addComment = async(req,res)=>{
     try
@@ -17,7 +17,7 @@ const addComment = async(req,res)=>{
         const comment = new Comment({
             commentText : req.body.commentText,
             videoId:videoId,
-            commentBy:userId
+            userId:userId
         })
 
         await comment.save()
@@ -45,7 +45,7 @@ const getAllComment = async(req,res)=>{
 
         const videoId = req.params.videoId
 
-        const comments = await Comment.find({videoId:videoId}).populate('commentBy', 'channelName profilePicUrl')
+        const comments = await Comment.find({videoId:videoId}).populate('userId', 'channelName profilePicUrl')
 
         res.status(200).json({
             comments:comments
