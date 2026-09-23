@@ -45,7 +45,7 @@ const getAllComment = async(req,res)=>{
 
         const videoId = req.params.videoId
 
-        const comments = await Comment.find({videoId:videoId})
+        const comments = await Comment.find({videoId:videoId}).populate('commentBy', 'channelName profilePicUrl')
 
         res.status(200).json({
             comments:comments
