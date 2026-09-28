@@ -85,7 +85,7 @@ const login = async (req, res) => {
 const subscriber = async (req, res) => {
     try {
         const channelId = req.params.channelId
-        console.log(req.headers)
+        console.log('token',req.headers.authorization)
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
         console.log(tokenData)
