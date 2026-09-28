@@ -9,6 +9,7 @@ const { resource } = require('../app')
 
 const upload = async (req, res) => {
     try {
+       console.log("video upload token : ",req.headers.authorization)
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
         const userId = tokenData._id
@@ -259,7 +260,7 @@ const videosByChannelId = async(req,res)=>{
 const deleteVideo = async(req,res)=>{
     try
     {
-        console.log("video upload token : ",req.headers.authorization)
+        
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
 
