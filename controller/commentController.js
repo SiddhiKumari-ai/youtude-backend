@@ -176,5 +176,55 @@ const unlike = async(req,res)=>{
     }
 }
 
+const deleteComment = async(req,res)=>{
+    try
+    {
+        const token = req.headers.authorization.split(" ")[1]
+        const tokenData = jwt.verify(token, process.env.SEC_KEY)
+        const userId = tokenData._id
+
+        const commentId = req.params.commentId
+        const videoId = req.params.videoId
+
+        const comment = await Comment.findById(commentId)
+        if(!comment)
+        {
+            return res.status(500).json({
+                error:"Comment not found!"
+            })
+        }
+
+        const video = await Video.findById(videoId)
+        if (!video) {
+            return res.status(500).json({
+                error: "Video not found"
+            })
+        }
+
+        const commentUserId = comment.userId._id
+        const videoUserId = video.uploadedBy._id
+
+        if(userId == !videoUserId || userId == !commentUserId)
+        {
+            return res.status(500).json({
+                error:"You can't delete this comment!"
+            })
+        }
+
+        await Comment.deleteOne(commentId)
+        res.status(200).json({
+            msg:"Comment deleted!"
+        })
+        
+    }
+    catch(err)
+    {
+        console.log(err)
+        res.status(500).json({
+            error:err
+        })
+    }
+}
+
 
 module.exports = {addComment,getAllComment,like,unlike}
