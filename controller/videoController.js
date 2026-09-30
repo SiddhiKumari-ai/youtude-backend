@@ -108,6 +108,7 @@ const like = async(req,res)=>{
            video.likedBy.push(tokenData._id)
 
            await video.save()
+           likeStatus = true
 
            res.status(200).json({
             likes : video.likes,
