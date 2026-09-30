@@ -71,7 +71,7 @@ const like = async(req,res)=>{
     {
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
-
+        const likeStatus = false
         const videoId = req.params.videoId
 
         const video = await Video.findById(videoId)
@@ -91,8 +91,9 @@ const like = async(req,res)=>{
            await video.save()
 
            return res.status(200).json({
-            likes:video.likes,
-            video:video
+            totalLikes:video.likes,
+            video:video,
+            likeStatus : likeStatus
            })
         }
 
@@ -110,7 +111,8 @@ const like = async(req,res)=>{
 
            res.status(200).json({
             likes : video.likes,
-            video:video
+            video:video,
+            likeStatus : likeStatus
            })
 
     }
