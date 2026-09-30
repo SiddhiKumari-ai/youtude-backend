@@ -90,7 +90,7 @@ const like = async(req,res)=>{
 
            await video.save()
 
-           return res.status(500).json({
+           return res.status(200).json({
             likes:video.likes,
             video:video
            })
