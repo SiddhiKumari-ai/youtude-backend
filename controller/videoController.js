@@ -71,7 +71,7 @@ const like = async(req,res)=>{
     {
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
-        const likeStatus = false
+        
         const videoId = req.params.videoId
 
         const video = await Video.findById(videoId)
@@ -93,7 +93,7 @@ const like = async(req,res)=>{
            return res.status(200).json({
             totalLikes:video.likes,
             video:video,
-            likeStatus : likeStatus
+            likeStatus : false
            })
         }
 
@@ -108,12 +108,12 @@ const like = async(req,res)=>{
            video.likedBy.push(tokenData._id)
 
            await video.save()
-           likeStatus = true
+        
 
            res.status(200).json({
             likes : video.likes,
             video:video,
-            likeStatus : likeStatus
+            likeStatus : true
            })
 
     }
@@ -134,7 +134,7 @@ const unlike = async(req,res)=>{
     {
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
-
+        const dislikeStatus = false
         const videoId = req.params.videoId
 
         const video = await Video.findById(videoId)
@@ -152,7 +152,7 @@ const unlike = async(req,res)=>{
            video.dislikedBy = video.dislikedBy.filter(userId => userId != tokenData._id)
 
            await video.save()
-
+           
            return res.status(500).json({
             dislikes:video.dislikes,
             video:video
