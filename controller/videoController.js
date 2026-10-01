@@ -111,7 +111,7 @@ const like = async(req,res)=>{
         
 
            res.status(200).json({
-            likes : video.likes,
+            totalLikes : video.likes,
             video:video,
             likeStatus : true
            })
@@ -134,7 +134,7 @@ const unlike = async(req,res)=>{
     {
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
-        const dislikeStatus = false
+        
         const videoId = req.params.videoId
 
         const video = await Video.findById(videoId)
@@ -155,7 +155,8 @@ const unlike = async(req,res)=>{
            
            return res.status(500).json({
             dislikes:video.dislikes,
-            video:video
+            video:video,
+            dislikeStatus : false
            })
         }
 
@@ -173,7 +174,8 @@ const unlike = async(req,res)=>{
 
            res.status(200).json({
             dislikes : video.dislikes,
-            video:video
+            video:video,
+            dislikeStatus : true
            })
 
     }
@@ -198,13 +200,42 @@ const videoById = async(req,res)=>{
         })
        }
 
+       
+       var likedStatus = false;
+       var dislikedStatus = false;
+       var SubscribedStatus = false;
+
+       const token = req.headers.authorization.split(" ")[1]
+
+       if(token)
+       {
+        const tokenData = jwt.verify(token, process.env.SEC_KEY)
+
+        if(video.likedBy.includes(tokenData._id))
+        {
+            likedStatus = true
+        }
+        else if (video.dislikedBy.includes(tokenData._id))
+        {
+            dislikedStatus = true
+        }
+
+        if(video.uploadedBy.subscriber.includes(tokenData._id))
+        {
+            SubscribedStatus = true
+        }
+       }
+
        console.log(video.views)
        video.views += 1;
 
        await video.save()
 
        res.status(200).json({
-        video:video
+        video:video,
+        likedStatus : likedStatus,
+        dislikedStatus : dislikedStatus,
+        SubscribedStatus : SubscribedStatus
        })
     }
     catch(err)
