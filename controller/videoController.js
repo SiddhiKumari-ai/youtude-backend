@@ -205,10 +205,9 @@ const videoById = async(req,res)=>{
        var dislikedStatus = false;
        var SubscribedStatus = false;
 
-       const token = req.headers.authorization.split(" ")[1]
-
-       if(token)
+       if(req.headers.authorization)
        {
+        const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
 
         if(video.likedBy.includes(tokenData._id))
@@ -226,7 +225,7 @@ const videoById = async(req,res)=>{
         }
        }
 
-       console.log(video.views)
+    //    console.log(video.views)
        video.views += 1;
 
        await video.save()
