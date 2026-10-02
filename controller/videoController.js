@@ -153,7 +153,7 @@ const unlike = async(req,res)=>{
 
            await video.save()
            
-           return res.status(500).json({
+           return res.status(200).json({
             dislikes:video.dislikes,
             video:video,
             dislikeStatus : false
