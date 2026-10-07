@@ -55,7 +55,7 @@ const getAllComment = async(req,res)=>{
 
                 const result = comments1.map(comment =>(
                     {
-                        commentId : _id,
+                        commentId : comment._id,
                         commentText : comment.commentText,
                         channelName : comment.userId.channelName,
                         profilePicUrl : comment.userId.profilePicUrl,
@@ -79,7 +79,7 @@ const getAllComment = async(req,res)=>{
 
                  const result = comments.map(comment =>(
                     {
-                        commentId : _id,
+                        commentId : comment._id,
                         commentText : comment.commentText,
                         channelName : comment.userId.channelName,
                         profilePicUrl : comment.userId.profilePicUrl,
