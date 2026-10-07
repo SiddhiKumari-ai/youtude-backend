@@ -3,6 +3,7 @@ const Comment = require('../models/Comment')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { profilePic } = require('./userController')
 // const { findById } = require('../models/User')
 
 const addComment = async(req,res)=>{
@@ -39,17 +40,62 @@ const addComment = async(req,res)=>{
 const getAllComment = async(req,res)=>{
     try
     {
-        // const token = req.headers.authorization.split(" ")[1]
-        // const tokenData = jwt.verify(token, process.env.SEC_KEY)
-        // const userId = tokenData._id
+        if(req.headers.authorization)
+        {
+            const token = req.headers.authorization.split(" ")[1]
+            if(token)
+            {
+                const tokenData = jwt.verify(token, process.env.SEC_KEY)
+                const userId = tokenData._id
 
-        const videoId = req.params.videoId
+                const videoId = req.params.videoId
 
-        const comments = await Comment.find({videoId:videoId}).populate('userId', 'channelName profilePicUrl')
+                const comments1 = await Comment.find({videoId:videoId}).populate('userId', 'channelName profilePicUrl')
+                // const cmt = await Comment.find({commentId:commentId}).populate('userId', 'channelName profilePicUrl').select('-likedBy -dislikedBy')
 
-        res.status(200).json({
-            comments:comments
+                const result = comments1.map(comment =>(
+                    {
+                        commentId : comment.commentId,
+                        commentText : comment.commentText,
+                        channelName : comment.userId.channelName,
+                        profilePicUrl : comment.userId.profilePicUrl,
+                        likes : comment.likes,
+                        dislikes : comment.dislikes,
+                        likeStatus : comment.likedBy.some(c=> c == userId),
+                        dislikeStatus : comment.dislikedBy.some(c=> c == userId)
+                    }
+                ))
+
+                 return res.status(200).json({
+                 comments:result
         })
+            }
+        }
+        else
+        {
+            const videoId = req.params.videoId
+
+            const comments = await Comment.find({ videoId: videoId }).populate('userId', 'channelName profilePicUrl').select('-likedBy -dislikedBy')
+
+                 const result = comments.map(comment =>(
+                    {
+                        commentId : comment.commentId,
+                        commentText : comment.commentText,
+                        channelName : comment.userId.channelName,
+                        profilePicUrl : comment.userId.profilePicUrl,
+                        likes : comment.likes,
+                        dislikes : comment.dislikes,
+                        likeStatus : false,
+                        dislikeStatus : false
+                    }
+                ))
+
+        return res.status(200).json({
+            comments:result
+        })
+        }
+
+    
     }
     catch(err)
     {
@@ -70,6 +116,7 @@ const like = async(req,res)=>{
         const commentId = req.params.commentId
 
         const comment = await Comment.findById(commentId)
+            console.log(comment)
 
         if(!comment)
         {
@@ -101,7 +148,7 @@ const like = async(req,res)=>{
            comment.likes += 1,
            comment.likedBy.push(tokenData._id)
 
-           await video.save()
+           await comment.save()
 
            res.status(200).json({
             likes : comment.likes,

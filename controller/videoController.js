@@ -201,9 +201,9 @@ const videoById = async(req,res)=>{
        }
 
        
-       var likedStatus = false;
-       var dislikedStatus = false;
-       var SubscribedStatus = false;
+       var likeStatus = false;
+       var dislikeStatus = false;
+       var subscribeStatus = false;
 
        if(req.headers.authorization)
        {
@@ -212,16 +212,16 @@ const videoById = async(req,res)=>{
 
         if(video.likedBy.includes(tokenData._id))
         {
-            likedStatus = true
+            likeStatus = true
         }
         else if (video.dislikedBy.includes(tokenData._id))
         {
-            dislikedStatus = true
+            dislikeStatus = true
         }
 
         if(video.uploadedBy.subscriber.includes(tokenData._id))
         {
-            SubscribedStatus = true
+            subscribeStatus = true
         }
        }
 
@@ -232,9 +232,9 @@ const videoById = async(req,res)=>{
 
        res.status(200).json({
         video:video,
-        likedStatus : likedStatus,
-        dislikedStatus : dislikedStatus,
-        SubscribedStatus : SubscribedStatus
+        likeStatus : likeStatus,
+        dislikeStatus : dislikeStatus,
+        subscribeStatus : subscribeStatus
        })
     }
     catch(err)

@@ -17,18 +17,18 @@ const commentSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
-    likedBy:{
+    likedBy:[{
         type:mongoose.Types.ObjectId,
         ref:"User"
-    },
+    }],
     dislikes:{
         type:Number,
         default:0
     },
-    dislikedBy:{
+    dislikedBy:[{
         type:mongoose.Types.ObjectId,
         ref:"User"
-    }
+    }]
 },
 {timestamps:true}
 )

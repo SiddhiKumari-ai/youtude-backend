@@ -88,7 +88,7 @@ const subscriber = async (req, res) => {
         console.log('token',req.headers.authorization)
         const token = req.headers.authorization.split(" ")[1]
         const tokenData = jwt.verify(token, process.env.SEC_KEY)
-        console.log(tokenData)
+        // console.log(tokenData)
 
         const user = await User.findById(tokenData._id)
 
@@ -119,7 +119,8 @@ const subscriber = async (req, res) => {
         await user.save()
 
         res.status(200).json({
-            success: "Subscribed"
+            success: "Subscribed",
+            SubscribeStatus : true
         })
 
     }
@@ -169,7 +170,8 @@ const unsubscribe = async (req, res) => {
         await user.save()
 
         res.status(200).json({
-            success: "Unubscribed"
+            success: "Unubscribed",
+            unsubscribeStatus : true
         })
 
     }
