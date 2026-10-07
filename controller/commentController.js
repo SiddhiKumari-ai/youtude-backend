@@ -132,9 +132,10 @@ const like = async(req,res)=>{
 
            await comment.save()
 
-           return res.status(500).json({
+           return res.status(200).json({
             likes:comment.likes,
-            comment:comment
+            comment:comment,
+            likeStatus : false
            })
         }
 
@@ -152,7 +153,8 @@ const like = async(req,res)=>{
 
            res.status(200).json({
             likes : comment.likes,
-            comment:comment
+            comment:comment,
+            likeStatus : true
            })
 
     }
@@ -174,7 +176,7 @@ const unlike = async(req,res)=>{
 
         const commentId = req.params.commentId
 
-        const comment = await Video.findById(commentId)
+        const comment = await Comment.findById(commentId)
 
         if(!comment)
         {
@@ -190,9 +192,10 @@ const unlike = async(req,res)=>{
 
            await comment.save()
 
-           return res.status(500).json({
+           return res.status(200).json({
             dislikes:comment.dislikes,
-            comment:comment
+            comment:comment,
+            dislikeStatus : false
            })
         }
 
@@ -210,7 +213,8 @@ const unlike = async(req,res)=>{
 
            res.status(200).json({
             dislikes : comment.dislikes,
-            comment:comment
+            comment:comment,
+            dislikeStatus : true
            })
 
     }
