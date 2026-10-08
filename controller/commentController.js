@@ -1,5 +1,6 @@
 require('dotenv').config()
 const Comment = require('../models/Comment')
+const Video = require('../models/Video')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -235,7 +236,7 @@ const deleteComment = async(req,res)=>{
         const userId = tokenData._id
 
         const commentId = req.params.commentId
-        const videoId = req.params.videoId
+        // console.log(commentId)
 
         const comment = await Comment.findById(commentId)
         if(!comment)
@@ -245,24 +246,28 @@ const deleteComment = async(req,res)=>{
             })
         }
 
-        const video = await Video.findById(videoId)
+        const video = await Video.findById(comment.videoId)
         if (!video) {
             return res.status(500).json({
                 error: "Video not found"
             })
         }
+        // console.log(video.uploadedBy._id)
 
         const commentUserId = comment.userId._id
         const videoUserId = video.uploadedBy._id
 
         if(userId == !videoUserId || userId == !commentUserId)
         {
+            // console.log('inside it')
             return res.status(500).json({
                 error:"You can't delete this comment!"
             })
         }
 
-        await Comment.deleteOne(commentId)
+        
+        await Comment.deleteOne({_id : commentId})
+        // await Comment.findByIdAndDelete(commentId)
         res.status(200).json({
             msg:"Comment deleted!"
         })
@@ -278,4 +283,4 @@ const deleteComment = async(req,res)=>{
 }
 
 
-module.exports = {addComment,getAllComment,like,unlike}
+module.exports = {addComment,getAllComment,like,unlike,deleteComment}
