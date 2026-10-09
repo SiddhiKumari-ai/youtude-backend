@@ -63,9 +63,12 @@ const getAllComment = async(req,res)=>{
                         likes : comment.likes,
                         dislikes : comment.dislikes,
                         likeStatus : comment.likedBy.some(c=> c == userId),
-                        dislikeStatus : comment.dislikedBy.some(c=> c == userId)
+                        dislikeStatus : comment.dislikedBy.some(c=> c == userId),
+                        commentBy : comment.userId._id
                     }
                 ))
+
+                console.log(result)
 
                  return res.status(200).json({
                  comments:result
@@ -151,6 +154,9 @@ const like = async(req,res)=>{
            comment.likedBy.push(tokenData._id)
 
            await comment.save()
+
+           const cmt = await Comment.findById(commentId).
+
 
            res.status(200).json({
             likes : comment.likes,
@@ -283,4 +289,61 @@ const deleteComment = async(req,res)=>{
 }
 
 
-module.exports = {addComment,getAllComment,like,unlike,deleteComment}
+
+const updateComment = async(req,res)=>{
+    try
+    {
+        const token = req.headers.authorization.split(" ")[1]
+        const tokenData = jwt.verify(token, process.env.SEC_KEY)
+        const userId = tokenData._id
+ 
+        const commentId = req.params.commentId
+
+        const comment = await Comment.findById(commentId)
+        if(!comment)
+        {
+            return res.status(500).json({
+                error:"Comment not found!"
+            })
+        }
+        
+        const video = await Video.findById(comment.videoId)
+        if (!video) {
+            return res.status(500).json({
+                error: "Video not found"
+            })
+        }
+
+        const commentUserId = comment.userId._id
+
+        if(userId != commentUserId)
+        {
+                return res.status(500).json({
+                error:"You can't update this comment!"
+            })
+        }
+
+        const updateComment = {
+            commentText : req.body.commentText,
+            videoId:comment.videoId,
+            userId:userId
+        }
+
+        const respo = await Comment.findByIdAndUpdate(commentId, updateComment, {new : true})
+        // console.log(respo)
+
+        res.status(200).json({
+            updatedComment : respo
+        })
+
+    }
+    catch(err)
+    {
+        console.log(err)
+        res.status(500).json({
+            error:err
+        })
+    }
+}
+
+module.exports = {addComment,getAllComment,like,unlike,deleteComment,updateComment}
