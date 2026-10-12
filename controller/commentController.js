@@ -155,7 +155,7 @@ const like = async(req,res)=>{
 
            await comment.save()
 
-           const cmt = await Comment.findById(commentId).
+           const cmt = await Comment.findById(commentId)
 
 
            res.status(200).json({
