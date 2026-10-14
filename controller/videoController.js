@@ -333,5 +333,60 @@ const deleteVideo = async(req,res)=>{
     }
 }
 
+const updatevideo = async(req,res)=>{
+    try
+    {
+        const token = req.headers.authorization.split(" ")[1]
+        const tokenData = jwt.verify(token, process.env.SEC_KEY)
+        const userId = tokenData._id
 
-module.exports = { upload, like, unlike, videoById, allVideo, videosByChannelId, deleteVideo}
+        const videoId = req.params.videoId  
+        const video = await Video.findById(req.params.videoId)
+
+        if(!video)
+        {
+            return res.status(200).json({
+                msg:"Video not found!"
+            })
+        }
+
+        if(video.uploadedBy != tokenData._id)
+        {
+            return res.status(200).json({
+                error:"Invalid user",
+                msg:"You can't update this video"
+            })
+        }
+
+        console.log(video)
+
+        const newData = ({
+            title: req.body.title,
+            description: req.body.description,
+            videoId: video.videoId,
+            videoUrl: video.videoUrl,
+            thumbnailId: video.thumbnailId,
+            thumbnailUrl: video.thumbnailUrl,
+            uploadedBy: userId,
+            tags: JSON.parse(req.body.tags),
+            // tags: req.body.tags.JSON.parse(req.body.tags),
+            category:req.body.category
+        })
+
+        const updatedVideo = await Video.findByIdAndUpdate(videoId, newData, { new : true})
+        res.status(200).json({
+            updatedVideo : updatedVideo
+        })
+
+    }
+    catch(err)
+    {
+        console.log(err)
+        res.status(500).json({
+            error:err
+        })
+    }
+}
+
+
+module.exports = { upload, like, unlike, videoById, allVideo, videosByChannelId, deleteVideo,updatevideo}
