@@ -283,8 +283,16 @@ const findChannel = async(req,res)=>{
             })
         }
 
+        console.log(channel)
+
         res.status(200).json({
-            channelDetails:channel
+            channelId:channel._id,
+            channelName : channel.channelName,
+            description :  channel.description,
+            profilePicUrl : channel.profilePicUrl,
+            coverPicUrl : channel.coverPicUrl,
+            subscriber : channel.subscriber.length,
+            subscribedTo : channel.subscribedTo
         })
     }
     catch(err)
