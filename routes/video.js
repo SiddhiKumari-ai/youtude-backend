@@ -7,7 +7,7 @@ Router.put('/like/:videoId',like)
 Router.put('/dislike/:videoId',unlike)
 Router.get('/allvideo',allVideo)
 Router.get('/:videoId',videoById)
-Router.get('/allvideo/channelId',videosByChannelId)
+Router.get('/allvideo/:channelId',videosByChannelId)
 Router.delete('/:videoId',deleteVideo)
 Router.put('/updatevideo/:videoId',updatevideo)
 

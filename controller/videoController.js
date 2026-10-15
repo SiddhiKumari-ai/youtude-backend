@@ -268,7 +268,7 @@ const allVideo = async(req,res)=>{
 const videosByChannelId = async(req,res)=>{
     try
     {
-       const videos = await Video.findById(req.params.channelid)
+       const videos = await Video.findById(req.params.channelId)
 
        if(!videos)
        {
